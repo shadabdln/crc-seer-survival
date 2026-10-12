@@ -1,0 +1,39 @@
+{
+  "attrition": [
+    {
+      "Step": "Exported records",
+      "N": 324174,
+      "Removed": 0
+    },
+    {
+      "Step": "First / only primary cancer",
+      "N": 261444,
+      "Removed": 62730
+    },
+    {
+      "Step": "Excl. death-certificate / autopsy-only",
+      "N": 258517,
+      "Removed": 2927
+    },
+    {
+      "Step": "Known survival time",
+      "N": 258517,
+      "Removed": 0
+    },
+    {
+      "Step": "Adults (>= 20 years)",
+      "N": 257833,
+      "Removed": 684
+    },
+    {
+      "Step": "Excl. in-situ stage",
+      "N": 257827,
+      "Removed": 6
+    }
+  ],
+  "n_cohort": 257827,
+  "n_train_labelled": 201350,
+  "n_test_labelled": 50338,
+  "survived_5y_rate_train": 0.5690638192202633,
+  "survived_5y_rate_test": 0.569053200365529
+}

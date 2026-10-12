@@ -1,0 +1,27 @@
+seed: 42
+prepare:
+  raw_path: data/raw/Survival_Data.csv
+  horizon_months: 60
+  test_size: 0.2
+train:
+  feature_set: B
+  model: Gradient Boosting
+  model_params:
+    subsample: 1.0
+    n_estimators: 250
+    max_depth: 3
+    learning_rate: 0.1
+  use_feature_selection: true
+  selector_C: 0.2
+  threshold: 0.5
+  calibrate: true
+  calibration_folds: 5
+  train_core_model: true
+evaluate:
+  n_boot: 1000
+  promote: true
+  min_auc_for_champion: 0.85
+  max_auc_drop_vs_champion: 0.005
+mlflow:
+  experiment: CRC_SEER_5yr_survival_scripts
+  registered_model: crc-5y-survival

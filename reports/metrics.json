@@ -1,0 +1,15 @@
+{
+  "test_roc_auc": 0.877,
+  "test_pr_auc": 0.8923,
+  "test_accuracy": 0.8036,
+  "test_sensitivity": 0.8773,
+  "test_specificity": 0.7062,
+  "test_ppv": 0.7977,
+  "test_npv": 0.8134,
+  "test_f1": 0.8356,
+  "test_brier": 0.1378,
+  "test_calib_intercept": -0.0138,
+  "test_calib_slope": 1.0246,
+  "test_brier_calibrated": 0.1379,
+  "n_test": 50338
+}

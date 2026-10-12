@@ -1,0 +1,6 @@
+# script pipeline (src/), MLflow registry, DVC and tests
+-r requirements.txt
+mlflow==3.17.0
+pyyaml
+pytest
+dvc

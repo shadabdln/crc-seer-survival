@@ -1,0 +1,16 @@
+*.csv
+genie_bpc_crc_2.0/
+notebooks/
+data/
+models/
+reports/
+tests/
+src/
+.dvc/
+.github/
+mlruns/
+mlflow.db
+outputs/
+outputs_genie/
+.venv/
+.git/

@@ -1,0 +1,43 @@
+# Local Kubernetes (Minikube) deployment of the Flask app.
+# Build the image inside Minikube first:  minikube image build -t crc-survival:latest .
+# Or use the Docker Hub image: set image: <dockerhub-username>/crc-survival:1.0 and imagePullPolicy: IfNotPresent
+# (a private image also needs an imagePullSecret created with kubectl create secret docker-registry).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crc-survival
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crc-survival
+  template:
+    metadata:
+      labels:
+        app: crc-survival
+    spec:
+      containers:
+        - name: app
+          image: crc-survival:latest
+          imagePullPolicy: Never        # use the image built inside Minikube, do not pull from a registry
+          ports:
+            - containerPort: 7860
+          resources:
+            requests: {cpu: "250m", memory: "512Mi"}
+            limits: {cpu: "1", memory: "1Gi"}
+          readinessProbe:
+            httpGet: {path: /health, port: 7860}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crc-survival
+spec:
+  type: NodePort
+  selector:
+    app: crc-survival
+  ports:
+    - port: 80
+      targetPort: 7860

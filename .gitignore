@@ -1,0 +1,26 @@
+# ---- patient-level data: NEVER commit (SEER and GENIE data-use agreements) ----
+*.csv
+Survival_Data.csv
+genie_bpc_crc_2.0/
+data/processed/
+*.pkl
+# data/raw/Survival_Data.csv is tracked by DVC (only its .dvc hash file goes to Git)
+# ---- local run products ----
+mlruns/
+mlflow.db
+mlflow_backup.db
+outputs/figures/*.tmp
+outputs_genie/
+.ipynb_checkpoints/
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/
+venv/
+.env
+# ---- trained model files: commit only after you have checked the SEER data-use terms (see README) ----
+app/artifacts/*.joblib
+app/artifacts/*.npy
+notebooks/artifacts/
+/artifacts/
+models/

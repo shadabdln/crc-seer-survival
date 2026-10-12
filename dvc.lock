@@ -1,0 +1,119 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+    - path: data/raw/Survival_Data.csv
+      hash: md5
+      md5: 5eca62e39d211901f3e937eddc824e6f
+      size: 242669203
+    - path: src/crc/data.py
+      hash: md5
+      md5: af81e872bd48ec3d4f43250bbee83bbf
+      size: 10035
+    - path: src/prepare.py
+      hash: md5
+      md5: f156004ae487c1e50fbeb9029beb217d
+      size: 1599
+    params:
+      params.yaml:
+        prepare:
+          raw_path: data/raw/Survival_Data.csv
+          horizon_months: 60
+          test_size: 0.2
+        seed: 42
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: d89b4a953d4f35f2738fb3581461ef91.dir
+      size: 61937797
+      nfiles: 2
+    - path: reports/cohort_attrition.json
+      hash: md5
+      md5: ffe4e3fd5264b50d03a12500f213dd6d
+      size: 797
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/train.pkl
+      hash: md5
+      md5: 3854339fac43d75881e3d6f10898d6d6
+      size: 49545429
+    - path: src/crc/data.py
+      hash: md5
+      md5: af81e872bd48ec3d4f43250bbee83bbf
+      size: 10035
+    - path: src/crc/model.py
+      hash: md5
+      md5: afe8564ebd0f3430b95b14b9791f74be
+      size: 5387
+    - path: src/crc/tracking.py
+      hash: md5
+      md5: 04be7641db5fa6c910f54678e3666f7a
+      size: 2912
+    - path: src/train.py
+      hash: md5
+      md5: 5d71f37414c08074dbaa80169cb91391
+      size: 6171
+    params:
+      params.yaml:
+        mlflow:
+          experiment: CRC_SEER_5yr_survival_scripts
+          registered_model: crc-5y-survival
+        seed: 42
+        train:
+          feature_set: B
+          model: Gradient Boosting
+          model_params:
+            subsample: 1.0
+            n_estimators: 250
+            max_depth: 3
+            learning_rate: 0.1
+          use_feature_selection: true
+          selector_C: 0.2
+          threshold: 0.5
+          calibrate: true
+          calibration_folds: 5
+          train_core_model: true
+    outs:
+    - path: models
+      hash: md5
+      md5: b2c0063ddfedbb2b057fd974abe1985d.dir
+      size: 713789
+      nfiles: 6
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/processed/test.pkl
+      hash: md5
+      md5: 5ee854ba8118572d812f454eeea6f093
+      size: 12392368
+    - path: models
+      hash: md5
+      md5: b2c0063ddfedbb2b057fd974abe1985d.dir
+      size: 713789
+      nfiles: 6
+    - path: src/crc/model.py
+      hash: md5
+      md5: afe8564ebd0f3430b95b14b9791f74be
+      size: 5387
+    - path: src/evaluate.py
+      hash: md5
+      md5: 23984f70412f806a936c5c43cfeafd1e
+      size: 4238
+    params:
+      params.yaml:
+        evaluate:
+          n_boot: 1000
+          promote: true
+          min_auc_for_champion: 0.85
+          max_auc_drop_vs_champion: 0.005
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: 4660e86552c7ea5ea8eb61b18c7a0adc
+      size: 361
+    - path: reports/metrics_95ci.json
+      hash: md5
+      md5: c627af047c7c440d8428762e39dbfda5
+      size: 1433

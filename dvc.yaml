@@ -1,0 +1,48 @@
+# DVC pipeline:  dvc repro   (re-runs only the stages whose code, data or params changed)
+# The SEER file is tracked by hash only; its copy lives in a LOCAL DVC remote on your computer (see MLOPS_GUIDE.md).
+stages:
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+      - src/prepare.py
+      - src/crc/data.py
+      - data/raw/Survival_Data.csv
+    params:
+      - seed
+      - prepare
+    outs:
+      - data/processed
+    metrics:
+      - reports/cohort_attrition.json:
+          cache: false
+
+  train:
+    cmd: python src/train.py
+    deps:
+      - src/train.py
+      - src/crc/data.py
+      - src/crc/model.py
+      - src/crc/tracking.py
+      - data/processed/train.pkl
+    params:
+      - seed
+      - train
+      - mlflow
+    outs:
+      - models
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - src/evaluate.py
+      - src/crc/model.py
+      - models
+      - data/processed/test.pkl
+    params:
+      - evaluate
+    metrics:
+      - reports/metrics.json:
+          cache: false
+    outs:
+      - reports/metrics_95ci.json:
+          cache: false

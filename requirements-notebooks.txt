@@ -1,0 +1,10 @@
+# full environment used to run the notebooks (Python 3.12)
+-r requirements.txt
+scipy
+matplotlib
+seaborn
+lime
+mlflow==3.17.0
+lifelines==0.30.3
+scikit-survival
+optuna
