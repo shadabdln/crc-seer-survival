@@ -1,27 +1,34 @@
+# Single source of truth for the script pipeline (prepare -> train -> evaluate).
+# DVC watches this file: change a value, run `dvc repro`, and only the affected stages re-run.
 seed: 42
+
 prepare:
-  raw_path: data/raw/Survival_Data.csv
+  raw_path: data/raw/Survival_Data.csv     # SEER*Stat export - stays on YOUR computer (DVC tracks only its hash)
   horizon_months: 60
   test_size: 0.2
+
 train:
-  feature_set: B
-  model: Gradient Boosting
+  feature_set: B                 # A = diagnosis-time | B = + surgical pathology (primary) | C = + treatment
+  model: Gradient Boosting       # final model chosen in the notebook by the CV selection rule (post hoc, see the paper)
+  # Classifier settings. Copy the notebook's tuned values here with:  python src/sync_params.py notebooks/artifacts/model_meta.json
   model_params:
-    subsample: 1.0
-    n_estimators: 250
-    max_depth: 3
+    n_estimators: 150
     learning_rate: 0.1
+    max_depth: 3
+    subsample: 0.8
   use_feature_selection: true
-  selector_C: 0.2
+  selector_C: 0.05
   threshold: 0.5
-  calibrate: true
+  calibrate: true                # out-of-fold isotonic calibrator, as in the notebook
   calibration_folds: 5
-  train_core_model: true
+  train_core_model: true         # 12-feature transportable model used by the GENIE notebook
+
 evaluate:
   n_boot: 1000
-  promote: true
+  promote: true                  # move the "champion" alias in the Model Registry if the rule below passes
   min_auc_for_champion: 0.85
   max_auc_drop_vs_champion: 0.005
+
 mlflow:
   experiment: CRC_SEER_5yr_survival_scripts
   registered_model: crc-5y-survival
